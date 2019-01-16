@@ -1,0 +1,5 @@
+Django==2.0.2
+uwsgi
+mysqlclient
+boto3
+aws-xray-sdk

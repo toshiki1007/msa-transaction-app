@@ -1,0 +1,11 @@
+transaction_app:
+  build: .
+  command: ./uwsgi.sh
+nginx:
+  build: ./nginx
+  links:
+    - transaction_app
+  volumes_from:
+    - transaction_app
+  ports:
+    - '0.0.0.0:80:80'
