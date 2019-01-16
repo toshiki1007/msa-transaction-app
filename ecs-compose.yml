@@ -16,7 +16,7 @@ services:
         awslogs-region: us-west-2
         awslogs-stream-prefix: transaction_app
   transaction_nginx:
-    image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_nginx:latest'
+    image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_transaction_nginx:latest'
     mem_limit: 200000000
     links:
       - transaction_app
