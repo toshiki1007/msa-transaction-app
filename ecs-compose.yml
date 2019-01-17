@@ -1,14 +1,13 @@
 version: '2'
 services:
   transaction_app:
-    image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_transaction_app:latest'
-    mem_limit: 500000000
+    mem_limit: 256000000
     command: ./uwsgi.sh
     environment:
       AWS_REGION: us-west-2
-      AWS_XRAY_DAEMON_ADDRESS: 'xray-daemon:2001'
+      AWS_XRAY_DAEMON_ADDRESS: 'aws-xray-daemon:2000'
     links:
-      - transaction_x-ray-daemon
+      - aws-xray-daemon
     logging:
       driver: awslogs
       options:
@@ -16,26 +15,37 @@ services:
         awslogs-region: us-west-2
         awslogs-stream-prefix: transaction_app
   transaction_nginx:
-    image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_transaction_nginx:latest'
-    mem_limit: 200000000
+    mem_limit: 128000000
     links:
       - transaction_app
     ports:
-      - '9001:80'
+      - '0:80'
     logging:
       driver: awslogs
       options:
         awslogs-group: msa_app
         awslogs-region: us-west-2
         awslogs-stream-prefix: transaction_nginx
-  transaction_x-ray-daemon:
-    image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_x-ray-daemon:latest'
-    mem_limit: 200000000
+  aws-xray-daemon:
+    image: 'amazon/aws-xray-daemon'
+    mem_limit: 128000000
     ports:
-      - '2001:2000/udp'
+      - '0:2000/udp'
+    command:
+      - "/usr/bin/xray"
+      - "--bind"
+      - "0.0.0.0:2000"
+      - "--region"
+      - "us-west-2"
+      - "--buffer-memory"
+      - "64"
+      - "--log-level"
+      - "dev"
+      - "--log-file"
+      - "/dev/stdout"
     logging:
       driver: awslogs
       options:
         awslogs-group: msa_app
         awslogs-region: us-west-2
-        awslogs-stream-prefix: transaction_x-ray-daemon
+        awslogs-stream-prefix: transaction_xray-daemon
