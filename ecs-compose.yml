@@ -6,7 +6,7 @@ services:
     command: ./uwsgi.sh
     environment:
       AWS_REGION: us-west-2
-      AWS_XRAY_DAEMON_ADDRESS: 'xray-daemon:2000'
+      AWS_XRAY_DAEMON_ADDRESS: 'xray-daemon:2001'
     links:
       - transaction_x-ray-daemon
     logging:
@@ -32,7 +32,7 @@ services:
     image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_x-ray-daemon:latest'
     mem_limit: 200000000
     ports:
-      - '2000:2000/udp'
+      - '2001:2000/udp'
     logging:
       driver: awslogs
       options:
