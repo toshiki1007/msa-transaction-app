@@ -125,12 +125,13 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 
 XRAY_RECORDER = {
     'AUTO_INSTRUMENT': True,
     'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
-    'AWS_XRAY_DAEMON_ADDRESS': '127.0.0.1:2000',
+    'AWS_XRAY_DAEMON_ADDRESS': 'balance_app:2000',
     'AWS_XRAY_TRACING_NAME': 'msa app',
     'PLUGINS': ('EC2Plugin', 'ECSPlugin'),
     'SAMPLING': False,
