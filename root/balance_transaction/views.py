@@ -2,36 +2,8 @@ from django.http.response import JsonResponse
 from .models import *
 from django.db.models import Max
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
-import sys
 
 import json
-
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.core import patch_all
-
-plugins = ('ECSPlugin', 'EC2Plugin')
-xray_recorder.configure(plugins=plugins)
-rules={
-	"version": 1,
-	"rules": [
-	    {
-	    "description": "rules",
-	    "service_name": "*",
-	    "http_method": "*",
-	    "url_path": "/balance_transaction",
-	    "fixed_target": 0,
-	    "rate": 0.05
-	    }
-	],
-	"default": {
-	    "fixed_target": 1,
-	    "rate": 0.1
-	    }
-}
-xray_recorder.configure(sampling_rules=rules)
-
-patch_all()
 
 def response(status_code, body, error_msg):
 	return {
@@ -43,9 +15,10 @@ def response(status_code, body, error_msg):
 #勘定取引履歴照会
 @csrf_exempt
 def balance_transaction(request):
-	xray_recorder.begin_segment('balance_transaction')
 	if request.method != 'POST':
 		return JsonResponse(response(400, None, '不正アクセスエラー'))
+
+	segment = xray_recorder.current_segment()
 
 	params = json.loads(request.body.decode())
 
@@ -53,14 +26,12 @@ def balance_transaction(request):
 
 	wallet = Wallet.objects.get(user_id = user_id)
 
-	xray_recorder.begin_subsegment('get Transaction')
 	transaction_objects = Transaction.objects.\
 		filter(wallet_id = wallet.wallet_id).\
 		select_related('wallet_id').\
 		select_related('trading_wallet_id').\
 		order_by('transaction_date').\
 		reverse()
-	xray_recorder.end_subsegment()
 
 	l = list()
 
@@ -70,5 +41,4 @@ def balance_transaction(request):
 	for obj in transaction_objects:
 		transactions['transactions'].append(Transaction.to_dict(obj))
 
-	xray_recorder.end_segment()
-	return JsonResponse(response(200, transactions, None))
+	return JsonResponse(response(200, segment, None))

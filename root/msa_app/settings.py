@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-#    'aws_xray_sdk.ext.django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,10 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'balance_transaction',
+    'aws_xray_sdk.ext.django',
 ]
 
 MIDDLEWARE = [
-#    'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
+    'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -131,10 +131,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 XRAY_RECORDER = {
     'AUTO_INSTRUMENT': True,
     'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
-    'AWS_XRAY_DAEMON_ADDRESS': 'balance_app:2000',
+    'AWS_XRAY_DAEMON_ADDRESS': '34.214.118.73:2000',
     'AWS_XRAY_TRACING_NAME': 'msa app',
     'PLUGINS': ('EC2Plugin', 'ECSPlugin'),
-    'SAMPLING': False,
+    'SAMPLING': True,
+    'SAMPLING_RULES': None,
+    'DYNAMIC_NAMING': None,
     'PATCH_MODULES': [
         'boto3',
     ],
