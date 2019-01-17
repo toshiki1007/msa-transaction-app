@@ -10,9 +10,27 @@ import json
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.core import patch_all
 
-#xray_recorder.configure(aws_xray_tracing_name='msa app')
 plugins = ('ECSPlugin', 'EC2Plugin')
 xray_recorder.configure(plugins=plugins)
+rules={
+	"version": 1,
+	"rules": [
+	    {
+	    "description": "rules",
+	    "service_name": "*",
+	    "http_method": "*",
+	    "url_path": "/balance_transaction",
+	    "fixed_target": 0,
+	    "rate": 0.05
+	    }
+	],
+	"default": {
+	    "fixed_target": 1,
+	    "rate": 0.1
+	    }
+}
+xray_recorder.configure(sampling_rules=rules)
+
 patch_all()
 
 def response(status_code, body, error_msg):
