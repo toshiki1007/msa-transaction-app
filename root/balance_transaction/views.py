@@ -18,8 +18,6 @@ def balance_transaction(request):
 	if request.method != 'POST':
 		return JsonResponse(response(400, None, '不正アクセスエラー'))
 
-	segment = xray_recorder.current_segment()
-
 	params = json.loads(request.body.decode())
 
 	user_id = params['userId']
@@ -41,4 +39,4 @@ def balance_transaction(request):
 	for obj in transaction_objects:
 		transactions['transactions'].append(Transaction.to_dict(obj))
 
-	return JsonResponse(response(200, segment, None))
+	return JsonResponse(response(200, transactions, None))
