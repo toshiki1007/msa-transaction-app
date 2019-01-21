@@ -132,7 +132,7 @@ XRAY_RECORDER = {
     'AUTO_INSTRUMENT': True,
     'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
     'AWS_XRAY_DAEMON_ADDRESS': '127.0.0.1:2000',
-    'AWS_XRAY_TRACING_NAME': 'msa app',
+    'AWS_XRAY_TRACING_NAME': 'msa app get_transactions',
     'PLUGINS': ('EC2Plugin', 'ECSPlugin'),
     'SAMPLING': True,
     'SAMPLING_RULES': None,
