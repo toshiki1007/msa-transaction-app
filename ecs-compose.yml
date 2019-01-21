@@ -1,6 +1,7 @@
 version: '2'
 services:
   transaction_app:
+    image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_transaction_app:latest'
     mem_limit: 256000000
     command: ./uwsgi.sh
     environment:
@@ -15,6 +16,7 @@ services:
         awslogs-region: us-west-2
         awslogs-stream-prefix: transaction_app
   transaction_nginx:
+    image: '636729331386.dkr.ecr.us-west-2.amazonaws.com/msa_transaction_nginx:latest'
     mem_limit: 128000000
     links:
       - transaction_app
