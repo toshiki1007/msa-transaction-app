@@ -15,7 +15,7 @@ def response(status_code, body):
 @csrf_exempt
 def balance_transaction(request):
 	if request.method != 'POST':
-		return response(400, {'errorMessage':'不正アクセスエラー'})
+		return response(400, None)
 
 	params = json.loads(request.body.decode())
 
