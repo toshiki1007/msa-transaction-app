@@ -6,18 +6,16 @@ from django.http import HttpResponse
 
 import json
 
-def response(status_code, body, message):
-	return {
-		'statusCode': status_code,
-		'body': body,
-		'errorMessage': message
-	}
+def response(status_code, body):
+	json_str = json.dumps(body, ensure_ascii=False, indent=4)
+
+	return HttpResponse(json_str, content_type='application/json; charset=UTF-8', status=status_code)
 
 #勘定取引履歴照会
 @csrf_exempt
 def balance_transaction(request):
 	if request.method != 'POST':
-		return response(400, None, 'invalid access error')
+		return response(400, None)
 
 	params = json.loads(request.body.decode())
 
@@ -40,4 +38,4 @@ def balance_transaction(request):
 	for obj in transaction_objects:
 		transactions['transactions'].append(Transaction.to_dict(obj))
 
-	return JsonResponse(response(200, transactions, None))
+	return response(200, transactions)
