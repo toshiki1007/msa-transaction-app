@@ -39,3 +39,20 @@ def balance_transaction(request):
 		transactions['transactions'].append(Transaction.to_dict(obj))
 
 	return response(200, transactions)
+
+#ウォレット照会
+@csrf_exempt
+def get_wallet(request):
+	if request.method != 'POST':
+		return response(400, None)
+
+	params = json.loads(request.body.decode())
+	user_id = params['userId']
+	wallet = Wallet.objects.get(user_id = user_id)
+
+	wallet_data = {
+		"walletId": wallet.wallet_id,
+		"balance": wallet.balance
+	}
+
+	return response(200, wallet_data)
